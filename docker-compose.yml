@@ -60,6 +60,16 @@ services:
     networks:
       - dev
 
+  gotify:
+    container_name: gotify
+    image: gotify/server
+    ports:
+      - "8080:80"
+    environment:
+      - GOTIFY_DEFAULTUSER_PASS=custom
+    networks:
+      - dev
+
 networks:
   dev:
     driver: bridge
