@@ -27,6 +27,8 @@ services:
       - dev
     depends_on:
       - mysql
+      - rabbitmq
+      - mailhog
 
   nginx:
     container_name: nginx
@@ -46,6 +48,15 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - dev
+
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - dev
 
