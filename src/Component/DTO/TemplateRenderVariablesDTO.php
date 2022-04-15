@@ -12,4 +12,9 @@ class TemplateRenderVariablesDTO extends AbstractDTO
     #[Assert\Type(type: 'string')]
     #[Assert\Type(type: 'digit')]
     protected $code;
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
 }
