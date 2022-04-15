@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Component\Request;
 
+use App\Exception\MalformedJsonException;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractJsonBodyRequest extends AbstractRequest
 {
     /**
-     * @throws JsonException
+     * @throws MalformedJsonException
      */
     public function __construct(Request $request)
     {
@@ -22,7 +23,11 @@ abstract class AbstractJsonBodyRequest extends AbstractRequest
             return;
         }
 
-        $parameters = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        try {
+            $parameters = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            throw new MalformedJsonException();
+        }
 
         foreach ($this as $parameterName => $parameterValue) {
             if ($parameterValue instanceof Request) {
