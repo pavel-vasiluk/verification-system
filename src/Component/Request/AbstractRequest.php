@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractRequest
 {
+    protected const EXCEPTION = 'Validation failed.';
+
     protected Request $request;
 
     public function __construct(Request $request)
@@ -18,5 +20,10 @@ abstract class AbstractRequest
     public function getRequest(): Request
     {
         return $this->request;
+    }
+
+    public function getException(): string
+    {
+        return static::EXCEPTION;
     }
 }
