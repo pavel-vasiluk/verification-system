@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Component\DTO\Request;
 
+use App\Component\DTO\AbstractDTO;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class VerificationUserInfoDTO implements JsonSerializable
+class VerificationUserInfoDTO extends AbstractDTO implements JsonSerializable
 {
-    private string $clientIp;
-    private string $userAgent;
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'string')]
+    protected $clientIp;
 
-    public function __construct(string $clientIp, string $userAgent)
-    {
-        $this->clientIp = $clientIp;
-        $this->userAgent = $userAgent;
-    }
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'string')]
+    protected $userAgent;
 
     public function getClientIp(): string
     {

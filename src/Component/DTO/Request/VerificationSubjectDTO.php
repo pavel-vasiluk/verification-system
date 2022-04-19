@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Component\DTO\Request;
 
+use App\Component\DTO\AbstractDTO;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class VerificationSubjectDTO implements JsonSerializable
+class VerificationSubjectDTO extends AbstractDTO implements JsonSerializable
 {
-    private string $identity;
-    private string $type;
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'string')]
+    protected $identity;
 
-    public function __construct(string $identity, string $type)
-    {
-        $this->identity = $identity;
-        $this->type = $type;
-    }
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'string')]
+    protected $type;
 
     public function getIdentity(): string
     {
