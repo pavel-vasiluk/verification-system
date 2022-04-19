@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Component\Request\DTO;
+namespace App\Component\DTO;
 
 abstract class AbstractDTO
 {

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Component\Request\DTO;
+namespace App\Component\DTO\Request;
 
+use App\Component\DTO\AbstractDTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TemplateRenderVariablesDTO extends AbstractDTO
