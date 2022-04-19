@@ -7,7 +7,8 @@ RUN set -eux; \
     apt-get update; \
     apt-get upgrade -y; \
     apt-get install -y --no-install-recommends \
-            curl
+            curl \
+            git
 
 RUN set -eux; \
     # Install the PHP pdo_mysql extension
