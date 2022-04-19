@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Component\Request\Template;
 
+use App\Component\DTO\Request\TemplateRenderVariablesDTO;
 use App\Component\Request\AbstractJsonBodyRequest;
-use App\Component\Request\DTO\TemplateRenderVariablesDTO;
 use App\Enums\TemplateSlug;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;

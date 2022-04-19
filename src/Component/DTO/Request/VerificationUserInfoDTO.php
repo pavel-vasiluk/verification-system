@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Component\DTO\Database;
+namespace App\Component\DTO\Request;
 
 use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 
-class VerificationUserInfoDTO implements DatabaseDTOInterface
+class VerificationUserInfoDTO implements JsonSerializable
 {
     private string $clientIp;
     private string $userAgent;
