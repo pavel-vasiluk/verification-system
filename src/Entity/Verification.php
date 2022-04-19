@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Component\DTO\Database\VerificationSubjectDTO;
-use App\Component\DTO\Database\VerificationUserInfoDTO;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
@@ -20,7 +18,7 @@ class Verification
     private ?UuidInterface $id = null;
 
     #[ORM\Column(type: 'json')]
-    private VerificationSubjectDTO $subject;
+    private array $subject;
 
     #[ORM\Column(type: 'boolean')]
     private bool $confirmed = false;
@@ -29,19 +27,19 @@ class Verification
     private string $code;
 
     #[ORM\Column(type: 'json')]
-    private VerificationUserInfoDTO $userInfo;
+    private array $userInfo;
 
     public function getId(): ?UuidInterface
     {
         return $this->id;
     }
 
-    public function getSubject(): VerificationSubjectDTO
+    public function getSubject(): array
     {
         return $this->subject;
     }
 
-    public function setSubject(VerificationSubjectDTO $subject): self
+    public function setSubject(array $subject): self
     {
         $this->subject = $subject;
 
@@ -72,12 +70,12 @@ class Verification
         return $this;
     }
 
-    public function getUserInfo(): VerificationUserInfoDTO
+    public function getUserInfo(): array
     {
         return $this->userInfo;
     }
 
-    public function setUserInfo(VerificationUserInfoDTO $userInfo): self
+    public function setUserInfo(array $userInfo): self
     {
         $this->userInfo = $userInfo;
 
