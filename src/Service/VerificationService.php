@@ -6,19 +6,32 @@ namespace App\Service;
 
 use App\Component\Request\Template\VerificationCreationRequest;
 use App\Entity\Verification;
+use App\Exception\DuplicatedVerificationException;
+use App\Repository\VerificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VerificationService
 {
     private EntityManagerInterface $entityManager;
+    private VerificationRepository $verificationRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        VerificationRepository $verificationRepository
+    ) {
         $this->entityManager = $entityManager;
+        $this->verificationRepository = $verificationRepository;
     }
 
+    /**
+     * @throws DuplicatedVerificationException
+     */
     public function createVerification(VerificationCreationRequest $request): string
     {
+        if ($this->verificationRepository->findBySubject($request->getSubject())) {
+            throw new DuplicatedVerificationException();
+        }
+
         $verification = (new Verification())
             ->setCode('12345678')
             ->setSubject($request->getSubject()->jsonSerialize())

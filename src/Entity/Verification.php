@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\VerificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: VerificationRepository::class)]
 class Verification
 {
     #[ORM\Id]
