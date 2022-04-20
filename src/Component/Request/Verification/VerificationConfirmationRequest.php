@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Component\Request\Verification;
 
-use App\Component\Request\AbstractJsonBodyRequest;
+use App\Component\Request\AbstractUserInfoAwareRequest;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class VerificationConfirmationRequest extends AbstractJsonBodyRequest
+class VerificationConfirmationRequest extends AbstractUserInfoAwareRequest
 {
     protected const EXCEPTION = 'Validation failed: invalid code supplied.';
 
