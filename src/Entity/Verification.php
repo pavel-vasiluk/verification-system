@@ -14,6 +14,8 @@ use Ramsey\Uuid\UuidInterface;
 #[ORM\Entity(repositoryClass: VerificationRepository::class)]
 class Verification
 {
+    public const MAX_CONFIRMATION_ATTEMPTS = 5;
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -26,6 +28,9 @@ class Verification
     #[ORM\Column(type: 'boolean')]
     private bool $confirmed = false;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isExpired = false;
+
     #[ORM\Column(type: 'string', length: 8)]
     private string $code;
 
@@ -34,6 +39,9 @@ class Verification
 
     #[ORM\Column(type: 'datetime')]
     private DateTime $createdAt;
+
+    #[ORM\Column(type: 'integer')]
+    private int $confirmationAttempts = 0;
 
     public function __construct()
     {
@@ -69,6 +77,18 @@ class Verification
         return $this;
     }
 
+    public function isExpired(): bool
+    {
+        return $this->isExpired;
+    }
+
+    public function setIsExpired(bool $isExpired): self
+    {
+        $this->isExpired = $isExpired;
+
+        return $this;
+    }
+
     public function getCode(): string
     {
         return $this->code;
@@ -96,5 +116,17 @@ class Verification
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
+    }
+
+    public function getConfirmationAttempts(): int
+    {
+        return $this->confirmationAttempts;
+    }
+
+    public function setConfirmationAttempts(int $confirmationAttempts): self
+    {
+        $this->confirmationAttempts = $confirmationAttempts;
+
+        return $this;
     }
 }

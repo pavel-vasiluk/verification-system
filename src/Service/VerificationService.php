@@ -8,6 +8,7 @@ use App\Component\Request\Verification\VerificationConfirmationRequest;
 use App\Component\Request\Verification\VerificationCreationRequest;
 use App\Component\Response\Verification\VerificationCreationResponse;
 use App\Entity\Verification;
+use App\Exception\AbstractRequestException;
 use App\Exception\DuplicatedVerificationException;
 use App\Exception\InvalidVerificationCodeException;
 use App\Exception\VerificationConfirmationDeniedException;
@@ -51,7 +52,7 @@ class VerificationService
             ->setUserInfo($request->getUserInfo()->jsonSerialize())
         ;
 
-        // here need to validate entity before actually persisting
+        // TODO: here need to validate entity before actually persisting
 
         $this->entityManager->persist($verification);
         $this->entityManager->flush();
@@ -60,13 +61,36 @@ class VerificationService
         return new VerificationCreationResponse($verification->getId()?->toString());
     }
 
+    /**
+     * @throws AbstractRequestException
+     */
     public function confirmVerification(VerificationConfirmationRequest $request, string $verificationUuid): void
     {
+        /** @var Verification $verification */
         $verification = $this->verificationRepository->find($verificationUuid);
-        $this->validateVerificationConfirmation($verification, $request);
 
-        $verification?->setConfirmed(true);
+        try {
+            $this->validateVerificationConfirmation($verification, $request);
+        } catch (AbstractRequestException $exception) {
+            if ($exception instanceof InvalidVerificationCodeException) {
+                $this->updateConfirmationAttempts($verification);
+            } elseif ($exception instanceof VerificationExpiredException) {
+                $verification->setIsExpired(true);
+            }
+
+            // TODO: possibly would be better to move all ifs into resolvers chain
+            // TODO: must trigger notification failure events here
+
+            throw $exception;
+        }
+
+        $verification
+            ->setConfirmed(true)
+            ->setIsExpired(true)
+        ;
         $this->entityManager->flush();
+
+        // TODO: must trigger notification happy event here
     }
 
     private function generateVerificationCode(): string
@@ -79,10 +103,7 @@ class VerificationService
     }
 
     /**
-     * @throws VerificationNotFoundException
-     * @throws VerificationConfirmationDeniedException
-     * @throws VerificationExpiredException
-     * @throws InvalidVerificationCodeException
+     * @throws AbstractRequestException
      */
     private function validateVerificationConfirmation(
         ?Verification $verification,
@@ -96,7 +117,7 @@ class VerificationService
             throw new VerificationConfirmationDeniedException();
         }
 
-        if ($verification->isConfirmed() || $this->isVerificationExpired($verification)) {
+        if ($verification->isExpired() || $this->isVerificationExpiredByTime($verification)) {
             throw new VerificationExpiredException();
         }
 
@@ -105,10 +126,21 @@ class VerificationService
         }
     }
 
-    private function isVerificationExpired(Verification $verification): bool
+    private function isVerificationExpiredByTime(Verification $verification): bool
     {
         $now = Carbon::now();
 
         return $now->diffInMinutes($verification->getCreatedAt()) >= $this->verificationLifetime;
+    }
+
+    private function updateConfirmationAttempts(Verification $verification): void
+    {
+        $verification->setConfirmationAttempts($verification?->getConfirmationAttempts() + 1);
+
+        if (Verification::MAX_CONFIRMATION_ATTEMPTS === $verification->getConfirmationAttempts()) {
+            $verification->setIsExpired(true);
+        }
+
+        $this->entityManager->flush();
     }
 }
