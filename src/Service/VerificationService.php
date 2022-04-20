@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Component\Request\Template\VerificationCreationRequest;
-use App\Component\Request\Template\VerificationCreationResponse;
+use App\Component\Request\Verification\VerificationConfirmationRequest;
+use App\Component\Request\Verification\VerificationCreationRequest;
+use App\Component\Response\Verification\VerificationCreationResponse;
 use App\Entity\Verification;
 use App\Exception\DuplicatedVerificationException;
+use App\Exception\InvalidVerificationCodeException;
+use App\Exception\VerificationConfirmationDeniedException;
+use App\Exception\VerificationExpiredException;
+use App\Exception\VerificationNotFoundException;
 use App\Repository\VerificationRepository;
+use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 
 class VerificationService
@@ -16,15 +22,18 @@ class VerificationService
     private EntityManagerInterface $entityManager;
     private VerificationRepository $verificationRepository;
     private int $verificationCodeLength;
+    private int $verificationLifetime;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         VerificationRepository $verificationRepository,
-        int $verificationCodeLength
+        int $verificationCodeLength,
+        int $verificationLifetime,
     ) {
         $this->entityManager = $entityManager;
         $this->verificationRepository = $verificationRepository;
         $this->verificationCodeLength = $verificationCodeLength;
+        $this->verificationLifetime = $verificationLifetime;
     }
 
     /**
@@ -51,6 +60,15 @@ class VerificationService
         return new VerificationCreationResponse($verification->getId()?->toString());
     }
 
+    public function confirmVerification(VerificationConfirmationRequest $request, string $verificationUuid): void
+    {
+        $verification = $this->verificationRepository->find($verificationUuid);
+        $this->validateVerificationConfirmation($verification, $request);
+
+        $verification?->setConfirmed(true);
+        $this->entityManager->flush();
+    }
+
     private function generateVerificationCode(): string
     {
         return substr(
@@ -58,5 +76,39 @@ class VerificationService
             0,
             $this->verificationCodeLength
         );
+    }
+
+    /**
+     * @throws VerificationNotFoundException
+     * @throws VerificationConfirmationDeniedException
+     * @throws VerificationExpiredException
+     * @throws InvalidVerificationCodeException
+     */
+    private function validateVerificationConfirmation(
+        ?Verification $verification,
+        VerificationConfirmationRequest $request
+    ): void {
+        if (!$verification) {
+            throw new VerificationNotFoundException();
+        }
+
+        if ($verification->getUserInfo() !== $request->getUserInfo()->jsonSerialize()) {
+            throw new VerificationConfirmationDeniedException();
+        }
+
+        if ($verification->isConfirmed() || $this->isVerificationExpired($verification)) {
+            throw new VerificationExpiredException();
+        }
+
+        if ($request->getCode() !== $verification->getCode()) {
+            throw new InvalidVerificationCodeException();
+        }
+    }
+
+    private function isVerificationExpired(Verification $verification): bool
+    {
+        $now = Carbon::now();
+
+        return $now->diffInMinutes($verification->getCreatedAt()) >= $this->verificationLifetime;
     }
 }

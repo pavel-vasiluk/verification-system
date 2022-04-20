@@ -30,3 +30,4 @@ services:
     App\Service\VerificationService:
         arguments:
             $verificationCodeLength: '%env(VERIFICATION_CODE_LENGTH)%'
+            $verificationLifetime: '%env(VERIFICATION_TTL)%'

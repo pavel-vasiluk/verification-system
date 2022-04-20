@@ -33,7 +33,12 @@ class VerificationController extends AbstractController
         methods: [Request::METHOD_PUT],
     )]
     public function confirmVerification(
+        VerificationConfirmationRequest $request,
+        VerificationService $verificationService,
+        string $id
     ): JsonResponse {
+        $verificationService->confirmVerification($request, $id);
+
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }
