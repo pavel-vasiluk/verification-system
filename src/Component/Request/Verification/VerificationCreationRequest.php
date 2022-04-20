@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Component\Request\Template;
+namespace App\Component\Request\Verification;
 
 use App\Component\DTO\Request\VerificationSubjectDTO;
 use App\Component\DTO\Request\VerificationUserInfoDTO;

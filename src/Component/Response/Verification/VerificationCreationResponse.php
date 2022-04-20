@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Component\Request\Template;
+namespace App\Component\Response\Verification;
 
-use App\Component\Request\AbstractResponse;
+use App\Component\Response\AbstractResponse;
 use JetBrains\PhpStorm\ArrayShape;
 
 class VerificationCreationResponse extends AbstractResponse

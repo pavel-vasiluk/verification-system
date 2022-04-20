@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Component\Request\Template\VerificationCreationRequest;
+use App\Component\Request\Verification\VerificationConfirmationRequest;
+use App\Component\Request\Verification\VerificationCreationRequest;
 use App\Service\VerificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

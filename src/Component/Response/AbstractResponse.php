@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Component\Request;
+namespace App\Component\Response;
 
 use JsonSerializable;
 
