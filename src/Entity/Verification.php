@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\VerificationRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
@@ -29,6 +30,14 @@ class Verification
 
     #[ORM\Column(type: 'json')]
     private array $userInfo;
+
+    #[ORM\Column(type: 'datetime')]
+    private DateTime $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
 
     public function getId(): ?UuidInterface
     {
@@ -81,5 +90,10 @@ class Verification
         $this->userInfo = $userInfo;
 
         return $this;
+    }
+
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
     }
 }
