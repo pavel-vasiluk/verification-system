@@ -24,4 +24,15 @@ class VerificationController extends AbstractController
             Response::HTTP_CREATED
         );
     }
+
+    #[Route(
+        '/verifications/{id}/confirm',
+        name: 'verification_confirm',
+        requirements: ['id' => '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'],
+        methods: [Request::METHOD_PUT],
+    )]
+    public function confirmVerification(
+    ): JsonResponse {
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
 }
