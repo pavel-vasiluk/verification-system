@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Component\Request\Template\VerificationCreationRequest;
+use App\Component\Request\Template\VerificationCreationResponse;
 use App\Entity\Verification;
 use App\Exception\DuplicatedVerificationException;
 use App\Repository\VerificationRepository;
@@ -26,7 +27,7 @@ class VerificationService
     /**
      * @throws DuplicatedVerificationException
      */
-    public function createVerification(VerificationCreationRequest $request): string
+    public function createVerification(VerificationCreationRequest $request): VerificationCreationResponse
     {
         if ($this->verificationRepository->findBySubject($request->getSubject())) {
             throw new DuplicatedVerificationException();
@@ -44,6 +45,6 @@ class VerificationService
         $this->entityManager->flush();
         $this->entityManager->refresh($verification);
 
-        return $verification->getId()?->toString();
+        return new VerificationCreationResponse($verification->getId()?->toString());
     }
 }
