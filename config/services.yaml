@@ -26,3 +26,7 @@ services:
     App\Resolver\RequestDtoValueResolver:
         tags:
             - { name: controller.argument_value_resolver }
+
+    App\Service\VerificationService:
+        arguments:
+            $verificationCodeLength: '%env(VERIFICATION_CODE_LENGTH)%'

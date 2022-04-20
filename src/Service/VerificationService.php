@@ -15,13 +15,16 @@ class VerificationService
 {
     private EntityManagerInterface $entityManager;
     private VerificationRepository $verificationRepository;
+    private int $verificationCodeLength;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        VerificationRepository $verificationRepository
+        VerificationRepository $verificationRepository,
+        int $verificationCodeLength
     ) {
         $this->entityManager = $entityManager;
         $this->verificationRepository = $verificationRepository;
+        $this->verificationCodeLength = $verificationCodeLength;
     }
 
     /**
@@ -34,7 +37,7 @@ class VerificationService
         }
 
         $verification = (new Verification())
-            ->setCode('12345678')
+            ->setCode($this->generateVerificationCode())
             ->setSubject($request->getSubject()->jsonSerialize())
             ->setUserInfo($request->getUserInfo()->jsonSerialize())
         ;
@@ -46,5 +49,14 @@ class VerificationService
         $this->entityManager->refresh($verification);
 
         return new VerificationCreationResponse($verification->getId()?->toString());
+    }
+
+    private function generateVerificationCode(): string
+    {
+        return substr(
+            (string) crc32(uniqid('', true)),
+            0,
+            $this->verificationCodeLength
+        );
     }
 }
