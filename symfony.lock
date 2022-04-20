@@ -104,6 +104,9 @@
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
+    "nesbot/carbon": {
+        "version": "2.57.0"
+    },
     "php-cs-fixer/diff": {
         "version": "v2.0.2"
     },
@@ -264,6 +267,19 @@
     },
     "symfony/string": {
         "version": "v6.0.3"
+    },
+    "symfony/translation": {
+        "version": "6.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.3",
+            "ref": "da64f5a2b6d96f5dc24914517c0350a5f91dee43"
+        },
+        "files": [
+            "config/packages/translation.yaml",
+            "translations/.gitignore"
+        ]
     },
     "symfony/translation-contracts": {
         "version": "v3.0.1"
