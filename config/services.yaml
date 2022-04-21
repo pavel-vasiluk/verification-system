@@ -15,7 +15,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Middleware,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -30,4 +30,26 @@ services:
     App\Service\VerificationService:
         arguments:
             $verificationCodeLength: '%env(VERIFICATION_CODE_LENGTH)%'
+            $confirmationHandler: '@app.verification.verification_handler'
+
+    App\Middleware\Verification\Confirmation\Handler\VerificationExistenceConfirmationHandler:
+        tags:
+            - { name: 'verification_handler', priority: 200 }
+
+    App\Middleware\Verification\Confirmation\Handler\ClientAccessConfirmationHandler:
+        tags:
+            - { name: 'verification_handler', priority: 190 }
+
+    App\Middleware\Verification\Confirmation\Handler\ActiveStatusConfirmationHandler:
+        arguments:
             $verificationLifetime: '%env(VERIFICATION_TTL)%'
+        tags:
+            - { name: 'verification_handler', priority: 180 }
+
+    App\Middleware\Verification\Confirmation\Handler\ValidVerificationCodeConfirmationHandler:
+        tags:
+            - { name: 'verification_handler', priority: 170 }
+
+    App\Middleware\Verification\Confirmation\Handler\VerificationConfirmationHandler:
+        tags:
+            - { name: 'verification_handler', priority: 160 }

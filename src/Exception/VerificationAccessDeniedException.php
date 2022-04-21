@@ -7,7 +7,7 @@ namespace App\Exception;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpFoundation\Response;
 
-class VerificationConfirmationDeniedException extends AbstractRequestException
+class VerificationAccessDeniedException extends AbstractRequestException
 {
     protected $message = 'No permission to confirm verification.';
 
