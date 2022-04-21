@@ -6,5 +6,4 @@ namespace App\Event\Verification;
 
 class VerificationConfirmedEvent extends AbstractVerificationEvent
 {
-    public const NAME = 'verification.confirmed';
 }

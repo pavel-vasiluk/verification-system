@@ -9,35 +9,34 @@ use App\Event\Verification\VerificationConfirmedEvent;
 use App\Event\Verification\VerificationCreatedEvent;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class VerificationListener implements EventSubscriberInterface
 {
     #[ArrayShape(
         [
-            VerificationCreatedEvent::NAME => 'string',
-            VerificationConfirmedEvent::NAME => 'string',
-            VerificationConfirmationFailedEvent::NAME => 'string',
+            VerificationCreatedEvent::class => 'string',
+            VerificationConfirmedEvent::class => 'string',
+            VerificationConfirmationFailedEvent::class => 'string',
         ]
     )]
     public static function getSubscribedEvents(): array
     {
         return [
-            VerificationCreatedEvent::NAME => 'onVerificationCreated',
-            VerificationConfirmedEvent::NAME => 'onVerificationConfirmed',
-            VerificationConfirmationFailedEvent::NAME => 'onVerificationConfirmationFailed',
+            VerificationCreatedEvent::class => 'onVerificationCreated',
+            VerificationConfirmedEvent::class => 'onVerificationConfirmed',
+            VerificationConfirmationFailedEvent::class => 'onVerificationConfirmationFailed',
         ];
     }
 
-    public function onVerificationCreated(ExceptionEvent $event): void
+    public function onVerificationCreated(VerificationCreatedEvent $event): void
     {
     }
 
-    public function onVerificationConfirmed(ExceptionEvent $event): void
+    public function onVerificationConfirmed(VerificationConfirmedEvent $event): void
     {
     }
 
-    public function onVerificationConfirmationFailed(ExceptionEvent $event): void
+    public function onVerificationConfirmationFailed(VerificationConfirmationFailedEvent $event): void
     {
     }
 }
