@@ -8,13 +8,19 @@ RUN set -eux; \
     apt-get upgrade -y; \
     apt-get install -y --no-install-recommends \
             curl \
-            git
+            git \
+            librabbitmq-dev \
+            libssl-dev
 
 RUN set -eux; \
     # Install the PHP pdo_mysql extension
     docker-php-ext-install pdo_mysql;
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+# AMQP
+RUN pecl install amqp
+RUN docker-php-ext-enable amqp
 
 RUN chown www-data:www-data /var/www
 
