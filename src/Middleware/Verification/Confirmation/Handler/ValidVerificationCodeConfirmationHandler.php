@@ -13,7 +13,7 @@ class ValidVerificationCodeConfirmationHandler extends AbstractConfirmationHandl
     /**
      * @throws InvalidVerificationCodeException
      */
-    public function process(?Verification $verification, VerificationConfirmationRequest $request): void
+    public function process(VerificationConfirmationRequest $request, ?Verification $verification = null): void
     {
         if ($request->getCode() !== $verification?->getCode()) {
             $this->updateConfirmationAttempts($verification);

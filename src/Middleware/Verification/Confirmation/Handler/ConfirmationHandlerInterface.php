@@ -9,7 +9,7 @@ use App\Entity\Verification;
 
 interface ConfirmationHandlerInterface
 {
-    public function process(?Verification $verification, VerificationConfirmationRequest $request): void;
+    public function process(VerificationConfirmationRequest $request, ?Verification $verification = null): void;
 
     public function setSuccessor(?ConfirmationHandlerInterface $successor): void;
 }

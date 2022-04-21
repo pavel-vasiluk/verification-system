@@ -13,7 +13,7 @@ class ClientAccessConfirmationHandler extends AbstractConfirmationHandler
     /**
      * @throws VerificationAccessDeniedException
      */
-    public function process(?Verification $verification, VerificationConfirmationRequest $request): void
+    public function process(VerificationConfirmationRequest $request, ?Verification $verification = null): void
     {
         if ($verification?->getUserInfo() !== $request->getUserInfo()->jsonSerialize()) {
             // TODO: dispatch VerificationConfirmationFailed event

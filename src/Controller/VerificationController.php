@@ -34,10 +34,9 @@ class VerificationController extends AbstractController
     )]
     public function confirmVerification(
         VerificationConfirmationRequest $request,
-        VerificationService $verificationService,
-        string $id
+        VerificationService $verificationService
     ): JsonResponse {
-        $verificationService->confirmVerification($request, $id);
+        $verificationService->confirmVerification($request);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

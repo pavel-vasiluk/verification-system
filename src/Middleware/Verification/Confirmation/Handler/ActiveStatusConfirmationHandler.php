@@ -9,21 +9,25 @@ use App\Entity\Verification;
 use App\Exception\VerificationExpiredException;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ActiveStatusConfirmationHandler extends AbstractConfirmationHandler
 {
     private int $verificationLifetime;
 
-    public function __construct(EntityManagerInterface $entityManager, int $verificationLifetime)
-    {
-        parent::__construct($entityManager);
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        EventDispatcherInterface $eventDispatcher,
+        int $verificationLifetime
+    ) {
+        parent::__construct($entityManager, $eventDispatcher);
         $this->verificationLifetime = $verificationLifetime;
     }
 
     /**
      * @throws VerificationExpiredException
      */
-    public function process(?Verification $verification, VerificationConfirmationRequest $request): void
+    public function process(VerificationConfirmationRequest $request, ?Verification $verification = null): void
     {
         if (!$verification?->isExpired() && $this->isVerificationExpiredByTime($verification)) {
             $verification?->setIsExpired(true);

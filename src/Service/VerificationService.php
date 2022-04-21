@@ -56,10 +56,9 @@ class VerificationService
         return new VerificationCreationResponse($verification->getId()?->toString());
     }
 
-    public function confirmVerification(VerificationConfirmationRequest $request, string $verificationUuid): void
+    public function confirmVerification(VerificationConfirmationRequest $request): void
     {
-        $verification = $this->verificationRepository->find($verificationUuid);
-        $this->confirmationHandler->process($verification, $request);
+        $this->confirmationHandler->process($request);
     }
 
     private function generateVerificationCode(): string
