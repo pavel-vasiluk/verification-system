@@ -12,10 +12,10 @@ class ConfirmationHandlerProviderPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        $locationHandlers = $container->findTaggedServiceIds('verification_handler');
+        $confirmationHandlers = $container->findTaggedServiceIds('verification_handler');
 
         $handlersByPriority = [];
-        foreach ($locationHandlers as $id => $attributes) {
+        foreach ($confirmationHandlers as $id => $attributes) {
             $priority = (int) ($attributes[0]['priority'] ?? 0);
 
             $handlersByPriority[$priority][] = $id;
