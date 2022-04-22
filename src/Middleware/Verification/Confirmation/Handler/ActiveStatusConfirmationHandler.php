@@ -35,9 +35,14 @@ class ActiveStatusConfirmationHandler extends AbstractConfirmationHandler
         }
 
         if ($verification?->isExpired()) {
-            // TODO: dispatch VerificationConfirmationFailed event
+            $exception = new VerificationExpiredException();
+            $this->dispatchConfirmationFailedEvent(
+                $verification?->getId()?->toString(),
+                $exception->getCode(),
+                $exception->getMessage()
+            );
 
-            throw new VerificationExpiredException();
+            throw $exception;
         }
 
         $this->processNext($verification, $request);

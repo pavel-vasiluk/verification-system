@@ -18,9 +18,14 @@ class ValidVerificationCodeConfirmationHandler extends AbstractConfirmationHandl
         if ($request->getCode() !== $verification?->getCode()) {
             $this->updateConfirmationAttempts($verification);
 
-            // TODO: dispatch VerificationConfirmationFailed event
+            $exception = new InvalidVerificationCodeException();
+            $this->dispatchConfirmationFailedEvent(
+                $verification?->getId()?->toString(),
+                $exception->getCode(),
+                $exception->getMessage()
+            );
 
-            throw new InvalidVerificationCodeException();
+            throw $exception;
         }
 
         $this->processNext($verification, $request);
