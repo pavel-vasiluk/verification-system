@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Event\Verification;
 
 use DateTimeInterface;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 use Symfony\Contracts\EventDispatcher\Event;
 
-abstract class AbstractVerificationEvent extends Event
+abstract class AbstractVerificationEvent extends Event implements JsonSerializable
 {
     protected string $id;
     protected int $code;
@@ -40,5 +42,16 @@ abstract class AbstractVerificationEvent extends Event
     public function getOccurredOn(): DateTimeInterface
     {
         return $this->occurredOn;
+    }
+
+    #[ArrayShape(['id' => 'string', 'code' => 'int', 'subject' => 'array', 'occurredOn' => DateTimeInterface::class])]
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'code' => $this->getCode(),
+            'subject' => $this->getSubject(),
+            'occurredOn' => $this->getOccurredOn(),
+        ];
     }
 }

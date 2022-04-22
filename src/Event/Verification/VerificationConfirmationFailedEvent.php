@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Event\Verification;
 
 use DateTimeInterface;
+use JetBrains\PhpStorm\ArrayShape;
 
 class VerificationConfirmationFailedEvent extends AbstractVerificationEvent
 {
@@ -19,5 +20,19 @@ class VerificationConfirmationFailedEvent extends AbstractVerificationEvent
     public function getReason(): string
     {
         return $this->reason;
+    }
+
+    #[ArrayShape([
+        'id' => 'string',
+        'code' => 'int',
+        'subject' => 'array',
+        'occurredOn' => DateTimeInterface::class,
+        'reason' => 'string',
+    ])]
+    public function jsonSerialize(): array
+    {
+        return parent::jsonSerialize() + [
+            'reason' => $this->getReason(),
+        ];
     }
 }
