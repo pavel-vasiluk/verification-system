@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Enums\ConfirmationTypes;
 use App\Event\Verification\VerificationConfirmationFailedEvent;
 use App\Event\Verification\VerificationConfirmedEvent;
 use App\Event\Verification\VerificationCreatedEvent;
+use App\Message\Verification\EmailVerificationCreatedMessage;
+use App\Message\Verification\SmsVerificationCreatedMessage;
 use App\Message\Verification\VerificationConfirmationFailedMessage;
 use App\Message\Verification\VerificationConfirmedMessage;
-use App\Message\Verification\VerificationCreatedMessage;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -41,12 +43,21 @@ class VerificationListener implements EventSubscriberInterface
 
     public function onVerificationCreated(VerificationCreatedEvent $event): void
     {
-        $message = new VerificationCreatedMessage(
-            $event->getId(),
-            $event->getCode(),
-            $event->getSubject(),
-            $event->getOccurredOn(),
-        );
+        if (ConfirmationTypes::EMAIL_CONFIRMATION === $event->getSubject()['type']) {
+            $message = new EmailVerificationCreatedMessage(
+                $event->getId(),
+                $event->getCode(),
+                $event->getSubject(),
+                $event->getOccurredOn(),
+            );
+        } else {
+            $message = new SmsVerificationCreatedMessage(
+                $event->getId(),
+                $event->getCode(),
+                $event->getSubject(),
+                $event->getOccurredOn(),
+            );
+        }
 
         $this->messageBus->dispatch($message);
     }
