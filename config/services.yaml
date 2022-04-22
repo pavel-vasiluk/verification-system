@@ -53,3 +53,7 @@ services:
     App\Middleware\Verification\Confirmation\Handler\VerificationConfirmationHandler:
         tags:
             - { name: 'verification_handler', priority: 160 }
+
+    App\HttpClient\VerificationHttpClient:
+        arguments:
+            $baseUri: '%env(VERIFICATION_BASE_URI)%'
