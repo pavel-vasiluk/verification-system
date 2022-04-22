@@ -10,6 +10,7 @@ use App\Component\Response\Verification\VerificationCreationResponse;
 use App\Entity\Verification;
 use App\Event\Verification\VerificationCreatedEvent;
 use App\Exception\DuplicatedVerificationException;
+use App\Helper\VerificationCodeGenerationHelper;
 use App\Middleware\Verification\Confirmation\Handler\ConfirmationHandlerInterface;
 use App\Repository\VerificationRepository;
 use Carbon\Carbon;
