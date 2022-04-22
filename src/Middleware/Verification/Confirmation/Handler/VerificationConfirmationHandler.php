@@ -6,7 +6,10 @@ namespace App\Middleware\Verification\Confirmation\Handler;
 
 use App\Component\Request\Verification\VerificationConfirmationRequest;
 use App\Entity\Verification;
+use App\Event\Verification\VerificationConfirmedEvent;
 use App\Exception\InvalidVerificationCodeException;
+use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\Response;
 
 class VerificationConfirmationHandler extends AbstractConfirmationHandler
 {
@@ -21,6 +24,12 @@ class VerificationConfirmationHandler extends AbstractConfirmationHandler
         ;
         $this->entityManager->flush();
 
-        // TODO: dispatch VerificationConfirmed event
+        $event = new VerificationConfirmedEvent(
+            $verification?->getId()?->toString(),
+            Response::HTTP_CREATED,
+            $verification?->getSubject(),
+            Carbon::now()
+        );
+        $this->eventDispatcher->dispatch($event);
     }
 }
