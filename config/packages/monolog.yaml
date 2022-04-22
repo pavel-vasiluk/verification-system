@@ -1,6 +1,8 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - verification # All verification actions are logged in the dedicated "verification" channel
+        - notification # All verification actions are logged in the dedicated "notification" channel
 
 when@dev:
     monolog:
@@ -10,6 +12,16 @@ when@dev:
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
                 channels: ["!event"]
+            verification:
+                type: stream
+                path: "%kernel.logs_dir%/verification_%kernel.environment%.log"
+                level: info
+                channels: [ "verification" ]
+            notification:
+                type: stream
+                path: "%kernel.logs_dir%/notification_%kernel.environment%.log"
+                level: info
+                channels: [ "notification" ]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:
