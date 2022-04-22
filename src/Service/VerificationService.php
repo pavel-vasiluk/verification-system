@@ -42,7 +42,7 @@ class VerificationService
         }
 
         $verification = (new Verification())
-            ->setCode($this->generateVerificationCode())
+            ->setCode(VerificationCodeGenerationHelper::generateVerificationCode($this->verificationCodeLength))
             ->setSubject($request->getSubject()->jsonSerialize())
             ->setUserInfo($request->getUserInfo()->jsonSerialize())
         ;
@@ -57,14 +57,5 @@ class VerificationService
     public function confirmVerification(VerificationConfirmationRequest $request): void
     {
         $this->confirmationHandler->process($request);
-    }
-
-    private function generateVerificationCode(): string
-    {
-        return substr(
-            (string) crc32(uniqid('', true)),
-            0,
-            $this->verificationCodeLength
-        );
     }
 }
