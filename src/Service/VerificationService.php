@@ -47,8 +47,6 @@ class VerificationService
             ->setUserInfo($request->getUserInfo()->jsonSerialize())
         ;
 
-        // TODO: here need to validate entity before actually persisting
-
         $this->entityManager->persist($verification);
         $this->entityManager->flush();
         $this->entityManager->refresh($verification);
