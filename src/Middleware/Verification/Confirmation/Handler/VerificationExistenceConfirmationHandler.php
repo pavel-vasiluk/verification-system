@@ -34,7 +34,11 @@ class VerificationExistenceConfirmationHandler extends AbstractConfirmationHandl
 
             if (!$verification = $this->verificationRepository->find($verificationUuid)) {
                 $exception = new VerificationNotFoundException();
-                $this->dispatchConfirmationFailedEvent($verificationUuid, $exception->getCode());
+                $this->dispatchConfirmationFailedEvent(
+                    $verificationUuid,
+                    $exception->getCode(),
+                    $exception->getMessage()
+                );
 
                 throw $exception;
             }

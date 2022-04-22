@@ -51,7 +51,8 @@ class VerificationListener implements EventSubscriberInterface
             $event->getId(),
             $event->getCode(),
             $event->getSubject(),
-            $event->getOccurredOn()
+            $event->getOccurredOn(),
+            $event->getReason(),
         );
 
         $this->messageBus->dispatch($message);

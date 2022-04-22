@@ -39,9 +39,13 @@ abstract class AbstractConfirmationHandler implements ConfirmationHandlerInterfa
         $this->successor->process($request, $verification);
     }
 
-    final public function dispatchConfirmationFailedEvent(string $id, int $code, array $subject = []): void
-    {
-        $event = new VerificationConfirmationFailedEvent($id, $code, $subject, Carbon::now());
+    final public function dispatchConfirmationFailedEvent(
+        string $id,
+        int $code,
+        string $reason,
+        array $subject = []
+    ): void {
+        $event = new VerificationConfirmationFailedEvent($id, $code, $subject, Carbon::now(), $reason);
 
         $this->eventDispatcher->dispatch($event);
     }

@@ -14,9 +14,9 @@ class VerificationConfirmationFailedMessageHandler
 {
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $verificationLogger)
     {
-        $this->logger = $logger;
+        $this->logger = $verificationLogger;
     }
 
     /**
@@ -26,7 +26,7 @@ class VerificationConfirmationFailedMessageHandler
     {
         $this->logger->info(
             sprintf(
-                'Verification\'s confirmation failure report. Message payload: %s',
+                'Verification confirmation failure report. Message payload: %s',
                 json_encode($message, JSON_THROW_ON_ERROR)
             )
         );
