@@ -22,7 +22,8 @@ class ValidVerificationCodeConfirmationHandler extends AbstractConfirmationHandl
             $this->dispatchConfirmationFailedEvent(
                 $verification?->getId()?->toString(),
                 $exception->getCode(),
-                $exception->getMessage()
+                $exception->getMessage(),
+                $verification?->getSubject()
             );
 
             throw $exception;

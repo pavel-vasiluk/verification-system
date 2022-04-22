@@ -39,7 +39,8 @@ class ActiveStatusConfirmationHandler extends AbstractConfirmationHandler
             $this->dispatchConfirmationFailedEvent(
                 $verification?->getId()?->toString(),
                 $exception->getCode(),
-                $exception->getMessage()
+                $exception->getMessage(),
+                $verification?->getSubject()
             );
 
             throw $exception;
