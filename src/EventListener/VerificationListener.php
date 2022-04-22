@@ -9,6 +9,7 @@ use App\Event\Verification\VerificationConfirmedEvent;
 use App\Event\Verification\VerificationCreatedEvent;
 use App\Message\Verification\VerificationConfirmationFailedMessage;
 use App\Message\Verification\VerificationConfirmedMessage;
+use App\Message\Verification\VerificationCreatedMessage;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -40,6 +41,14 @@ class VerificationListener implements EventSubscriberInterface
 
     public function onVerificationCreated(VerificationCreatedEvent $event): void
     {
+        $message = new VerificationCreatedMessage(
+            $event->getId(),
+            $event->getCode(),
+            $event->getSubject(),
+            $event->getOccurredOn(),
+        );
+
+        $this->messageBus->dispatch($message);
     }
 
     public function onVerificationConfirmed(VerificationConfirmedEvent $event): void

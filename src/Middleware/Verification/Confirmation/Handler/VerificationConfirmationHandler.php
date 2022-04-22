@@ -26,7 +26,7 @@ class VerificationConfirmationHandler extends AbstractConfirmationHandler
 
         $event = new VerificationConfirmedEvent(
             $verification?->getId()?->toString(),
-            Response::HTTP_CREATED,
+            Response::HTTP_NO_CONTENT,
             $verification?->getSubject(),
             Carbon::now()
         );
