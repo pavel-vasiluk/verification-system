@@ -9,7 +9,6 @@ use App\Exception\VerificationNotFoundException;
 use App\Message\Verification\VerificationCreatedMessage;
 use App\Repository\VerificationRepository;
 use App\Service\NotificationService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -17,16 +16,13 @@ class VerificationCreatedMessageHandler
 {
     protected VerificationRepository $verificationRepository;
     protected NotificationService $notificationService;
-    protected LoggerInterface $logger;
 
     public function __construct(
         VerificationRepository $verificationRepository,
         NotificationService $notificationService,
-        LoggerInterface $verificationLogger
     ) {
         $this->verificationRepository = $verificationRepository;
         $this->notificationService = $notificationService;
-        $this->logger = $verificationLogger;
     }
 
     /**
