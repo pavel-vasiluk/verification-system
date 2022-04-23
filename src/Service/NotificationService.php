@@ -9,9 +9,12 @@ use App\Entity\Notification;
 use App\Enums\ConfirmationTypes;
 use App\Enums\NotificationChannels;
 use App\Enums\TemplateSlug;
+use App\Event\Notification\NotificationCreatedEvent;
 use App\Exception\NotificationSubjectException;
 use App\HttpClient\VerificationHttpClient;
+use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class NotificationService
@@ -22,15 +25,18 @@ class NotificationService
     ];
 
     private EntityManagerInterface $entityManager;
+    private EventDispatcherInterface $eventDispatcher;
     private VerificationHttpClient $verificationHttpClient;
     private ValidatorInterface $validator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        EventDispatcherInterface $eventDispatcher,
         VerificationHttpClient $verificationHttpClient,
         ValidatorInterface $validator
     ) {
         $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
         $this->verificationHttpClient = $verificationHttpClient;
         $this->validator = $validator;
     }
@@ -54,7 +60,9 @@ class NotificationService
         $this->entityManager->flush();
         $this->entityManager->refresh($notification);
 
-        // TODO: dispatch NotificationCreated event
+        $this->eventDispatcher->dispatch(
+            new NotificationCreatedEvent($notification->getId()?->toString(), Carbon::now())
+        );
     }
 
     private function resolveNotificationBody(NotificationSubjectDTO $notificationSubject): string
