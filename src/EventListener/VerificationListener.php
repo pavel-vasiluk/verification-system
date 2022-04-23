@@ -48,7 +48,7 @@ class VerificationListener implements EventSubscriberInterface
      */
     public function onVerificationCreated(VerificationCreatedEvent $event): void
     {
-        $this->logEvent(
+        $this->logger->info(
             sprintf(
                 'Verification %s has been created. Event payload: %s',
                 $event->getId(),
@@ -56,14 +56,9 @@ class VerificationListener implements EventSubscriberInterface
             )
         );
 
-        $message = new VerificationCreatedMessage(
-            $event->getId(),
-            $event->getCode(),
-            $event->getSubject(),
-            $event->getOccurredOn(),
+        $this->messageBus->dispatch(
+            new VerificationCreatedMessage($event->getId())
         );
-
-        $this->messageBus->dispatch($message);
     }
 
     /**
@@ -71,7 +66,7 @@ class VerificationListener implements EventSubscriberInterface
      */
     public function onVerificationConfirmed(VerificationConfirmedEvent $event): void
     {
-        $this->logEvent(
+        $this->logger->info(
             sprintf(
                 'Verification %s has been successfully confirmed. Event payload: %s',
                 $event->getId(),
@@ -85,16 +80,11 @@ class VerificationListener implements EventSubscriberInterface
      */
     public function onVerificationConfirmationFailed(VerificationConfirmationFailedEvent $event): void
     {
-        $this->logEvent(
+        $this->logger->error(
             sprintf(
                 'Verification confirmation failure report. Event payload: %s',
                 json_encode($event, JSON_THROW_ON_ERROR)
             )
         );
-    }
-
-    private function logEvent(string $message): void
-    {
-        $this->logger->info($message);
     }
 }
