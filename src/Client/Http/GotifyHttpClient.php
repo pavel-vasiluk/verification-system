@@ -7,7 +7,7 @@ namespace App\Client\Http;
 use App\Client\NotificationClientInterface;
 use App\Component\DTO\Messenger\NotificationMessageDTO;
 use App\Enums\NotificationChannels;
-use App\Logging\NotificationLoggingTrait;
+use App\Helper\NotificationLoggingHelper;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +16,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GotifyHttpClient extends AbstractHttpClient implements NotificationClientInterface
 {
-    use NotificationLoggingTrait;
-
     private LoggerInterface $logger;
     private string $token;
 
@@ -54,8 +52,15 @@ class GotifyHttpClient extends AbstractHttpClient implements NotificationClientI
         );
 
         match ($response->getStatusCode()) {
-            Response::HTTP_OK => $this->logSuccessfullySentNotification($notificationMessage),
-            default => $this->logNotificationSendingFailure($notificationMessage, $response->getContent(false)),
+            Response::HTTP_OK => NotificationLoggingHelper::logSuccessfullySentNotification(
+                $this->logger,
+                $notificationMessage
+            ),
+            default => NotificationLoggingHelper::logNotificationSendingFailure(
+                $this->logger,
+                $notificationMessage,
+                $response->getContent(false)
+            ),
         };
     }
 }

@@ -7,7 +7,7 @@ namespace App\Client\Smtp;
 use App\Client\NotificationClientInterface;
 use App\Component\DTO\Messenger\NotificationMessageDTO;
 use App\Enums\NotificationChannels;
-use App\Logging\NotificationLoggingTrait;
+use App\Helper\NotificationLoggingHelper;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -17,8 +17,6 @@ use Symfony\Component\Mime\Email;
 
 class MailhogSmtpClient implements NotificationClientInterface
 {
-    use NotificationLoggingTrait;
-
     private MailerInterface $mailer;
     private LoggerInterface $logger;
 
@@ -48,11 +46,15 @@ class MailhogSmtpClient implements NotificationClientInterface
         try {
             $this->mailer->send($email);
         } catch (HandlerFailedException|TransportExceptionInterface $e) {
-            $this->logNotificationSendingFailure($notificationMessage, $e->getMessage());
+            NotificationLoggingHelper::logNotificationSendingFailure(
+                $this->logger,
+                $notificationMessage,
+                $e->getMessage()
+            );
 
             return;
         }
 
-        $this->logSuccessfullySentNotification($notificationMessage);
+        NotificationLoggingHelper::logSuccessfullySentNotification($this->logger, $notificationMessage);
     }
 }

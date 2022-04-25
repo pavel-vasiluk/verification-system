@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helper;
 
-class VerificationCodeGenerationHelper
+final class VerificationCodeGenerationHelper
 {
     public static function generateVerificationCode(int $digits): string
     {

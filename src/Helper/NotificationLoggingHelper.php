@@ -2,19 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Logging;
+namespace App\Helper;
 
 use App\Component\DTO\Messenger\NotificationMessageDTO;
 use JsonException;
+use Psr\Log\LoggerInterface;
 
-trait NotificationLoggingTrait
+final class NotificationLoggingHelper
 {
     /**
      * @throws JsonException
      */
-    private function logSuccessfullySentNotification(NotificationMessageDTO $notificationMessage): void
-    {
-        $this->logger->info(
+    public static function logSuccessfullySentNotification(
+        LoggerInterface $logger,
+        NotificationMessageDTO $notificationMessage
+    ): void {
+        $logger->info(
             sprintf(
                 'Notification message %s was successfully sent. Message payload: %s.',
                 $notificationMessage->getId(),
@@ -26,11 +29,12 @@ trait NotificationLoggingTrait
     /**
      * @throws JsonException
      */
-    private function logNotificationSendingFailure(
+    public static function logNotificationSendingFailure(
+        LoggerInterface $logger,
         NotificationMessageDTO $notificationMessage,
         string $errorResponse
     ): void {
-        $this->logger->error(
+        $logger->error(
             sprintf(
                 'Notification message %s was not send. Message payload: %s. Error response: %s.',
                 $notificationMessage->getId(),
