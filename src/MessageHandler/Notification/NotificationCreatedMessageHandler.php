@@ -35,7 +35,7 @@ class NotificationCreatedMessageHandler
         }
 
         $notificationMessagePayload = [
-            'id' => $notification->getId(),
+            'id' => $notification->getId()?->toString(),
             'recipient' => $notification->getRecipient(),
             'channel' => $notification->getChannel(),
             'body' => $notification->getBody(),

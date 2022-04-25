@@ -12,6 +12,7 @@ use App\Enums\ConfirmationTypes;
 use App\Enums\NotificationChannels;
 use App\Enums\TemplateSlug;
 use App\Event\Notification\NotificationCreatedEvent;
+use App\Exception\NotificationMessageException;
 use App\Exception\NotificationSubjectException;
 use App\Resolver\NotificationClientResolver;
 use Carbon\Carbon;
@@ -70,8 +71,15 @@ class NotificationService
         );
     }
 
+    /**
+     * @throws NotificationMessageException
+     */
     public function sendNotification(NotificationMessageDTO $notificationMessage): void
     {
+        if (count($this->validator->validate($notificationMessage)) > 0) {
+            throw new NotificationMessageException();
+        }
+
         $notificationClient = $this->notificationClientResolver->resolve($notificationMessage);
         $notificationClient->sendNotification($notificationMessage);
     }
