@@ -31,7 +31,7 @@ class Verification
     #[ORM\Column(type: 'boolean')]
     private bool $isExpired = false;
 
-    #[ORM\Column(type: 'string', length: 8)]
+    #[ORM\Column(type: 'string', length: 50)]
     private string $code;
 
     #[ORM\Column(type: 'json')]
