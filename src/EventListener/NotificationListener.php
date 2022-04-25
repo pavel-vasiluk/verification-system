@@ -6,7 +6,7 @@ namespace App\EventListener;
 
 use App\Event\Notification\NotificationCreatedEvent;
 use App\Event\Notification\NotificationDispatchedEvent;
-use App\Message\Verification\NotificationCreatedMessage;
+use App\Message\Notification\NotificationCreatedMessage;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonException;
 use Psr\Log\LoggerInterface;

@@ -6,7 +6,7 @@ namespace App\MessageHandler\Notification;
 
 use App\Component\DTO\Messenger\NotificationMessageDTO;
 use App\Exception\NotificationNotFoundException;
-use App\Message\Verification\NotificationCreatedMessage;
+use App\Message\Notification\NotificationCreatedMessage;
 use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
