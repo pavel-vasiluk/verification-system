@@ -6,6 +6,7 @@ namespace App\Client\Smtp;
 
 use App\Client\NotificationClientInterface;
 use App\Component\DTO\Messenger\NotificationMessageDTO;
+use App\Component\Response\Notification\NotificationSentResponse;
 use App\Enums\NotificationChannels;
 use App\Helper\NotificationLoggingHelper;
 use JsonException;
@@ -34,7 +35,7 @@ class MailhogSmtpClient implements NotificationClientInterface
     /**
      * @throws JsonException
      */
-    public function sendNotification(NotificationMessageDTO $notificationMessage): void
+    public function sendNotification(NotificationMessageDTO $notificationMessage): NotificationSentResponse
     {
         $email = (new Email())
             ->from('info@dev.verification.eu')
@@ -52,9 +53,11 @@ class MailhogSmtpClient implements NotificationClientInterface
                 $e->getMessage()
             );
 
-            return;
+            return new NotificationSentResponse(false);
         }
 
         NotificationLoggingHelper::logSuccessfullySentNotification($this->logger, $notificationMessage);
+
+        return new NotificationSentResponse(true);
     }
 }

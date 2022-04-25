@@ -12,6 +12,7 @@ use App\Enums\ConfirmationTypes;
 use App\Enums\NotificationChannels;
 use App\Enums\TemplateSlug;
 use App\Event\Notification\NotificationCreatedEvent;
+use App\Event\Notification\NotificationDispatchedEvent;
 use App\Exception\NotificationMessageException;
 use App\Exception\NotificationSubjectException;
 use App\Resolver\NotificationClientResolver;
@@ -81,7 +82,13 @@ class NotificationService
         }
 
         $notificationClient = $this->notificationClientResolver->resolve($notificationMessage);
-        $notificationClient->sendNotification($notificationMessage);
+        $notificationSentResponse = $notificationClient->sendNotification($notificationMessage);
+
+        if ($notificationSentResponse->isSuccessful()) {
+            $this->eventDispatcher->dispatch(
+                new NotificationDispatchedEvent($notificationMessage->getId(), Carbon::now())
+            );
+        }
     }
 
     private function resolveNotificationBody(NotificationSubjectDTO $notificationSubject): string

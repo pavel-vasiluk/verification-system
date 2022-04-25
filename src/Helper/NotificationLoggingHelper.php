@@ -6,6 +6,7 @@ namespace App\Helper;
 
 use App\Component\DTO\Messenger\NotificationMessageDTO;
 use App\Event\Notification\NotificationCreatedEvent;
+use App\Event\Notification\NotificationDispatchedEvent;
 use JsonException;
 use Psr\Log\LoggerInterface;
 
@@ -21,6 +22,22 @@ final class NotificationLoggingHelper
         $logger->info(
             sprintf(
                 'Notification %s has been created. Event payload: %s',
+                $event->getId(),
+                json_encode($event, JSON_THROW_ON_ERROR)
+            )
+        );
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public static function logNotificationDispatchedEvent(
+        LoggerInterface $logger,
+        NotificationDispatchedEvent $event
+    ): void {
+        $logger->info(
+            sprintf(
+                'Notification %s has been successfully dispatched. Event payload: %s',
                 $event->getId(),
                 json_encode($event, JSON_THROW_ON_ERROR)
             )

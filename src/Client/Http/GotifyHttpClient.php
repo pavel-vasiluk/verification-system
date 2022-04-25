@@ -6,6 +6,7 @@ namespace App\Client\Http;
 
 use App\Client\NotificationClientInterface;
 use App\Component\DTO\Messenger\NotificationMessageDTO;
+use App\Component\Response\Notification\NotificationSentResponse;
 use App\Enums\NotificationChannels;
 use App\Helper\NotificationLoggingHelper;
 use JsonException;
@@ -38,9 +39,9 @@ class GotifyHttpClient extends AbstractHttpClient implements NotificationClientI
     /**
      * @throws JsonException
      */
-    public function sendNotification(NotificationMessageDTO $notificationMessage): void
+    public function sendNotification(NotificationMessageDTO $notificationMessage): NotificationSentResponse
     {
-        $response = $this->httpClient->request(
+        $httpResponse = $this->httpClient->request(
             Request::METHOD_POST,
             sprintf('/message?token=%s', $this->token),
             [
@@ -51,16 +52,22 @@ class GotifyHttpClient extends AbstractHttpClient implements NotificationClientI
             ],
         );
 
-        match ($response->getStatusCode()) {
-            Response::HTTP_OK => NotificationLoggingHelper::logSuccessfullySentNotification(
+        $notificationSentResponse = new NotificationSentResponse(
+            Response::HTTP_OK === $httpResponse->getStatusCode()
+        );
+
+        match ($notificationSentResponse->isSuccessful()) {
+            true => NotificationLoggingHelper::logSuccessfullySentNotification(
                 $this->logger,
                 $notificationMessage
             ),
-            default => NotificationLoggingHelper::logNotificationSendingFailure(
+            false => NotificationLoggingHelper::logNotificationSendingFailure(
                 $this->logger,
                 $notificationMessage,
-                $response->getContent(false)
+                $httpResponse->getContent(false)
             ),
         };
+
+        return $notificationSentResponse;
     }
 }
