@@ -64,6 +64,9 @@ services:
             $token: '%env(GOTIFY_APP_TOKEN)%'
         tags: [ 'notification.client' ]
 
+    App\Client\Smtp\MailhogSmtpClient:
+        tags: [ 'notification.client' ]
+
     App\Resolver\NotificationClientResolver:
         arguments:
             - !tagged_iterator notification.client

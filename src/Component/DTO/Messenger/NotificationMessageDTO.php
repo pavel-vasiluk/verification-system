@@ -49,7 +49,7 @@ class NotificationMessageDTO extends AbstractDTO implements JsonSerializable
         return $this->body;
     }
 
-    #[ArrayShape(['id' => "string", 'recipient' => "string", 'channel' => "string", 'body' => "string"])]
+    #[ArrayShape(['id' => 'string', 'recipient' => 'string', 'channel' => 'string', 'body' => 'string'])]
     public function jsonSerialize(): array
     {
         return [
