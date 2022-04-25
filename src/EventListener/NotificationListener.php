@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Event\Notification\NotificationCreatedEvent;
 use App\Event\Notification\NotificationDispatchedEvent;
+use App\Helper\NotificationLoggingHelper;
 use App\Message\Notification\NotificationCreatedMessage;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonException;
@@ -45,13 +46,7 @@ class NotificationListener implements EventSubscriberInterface
      */
     public function onNotificationCreated(NotificationCreatedEvent $event): void
     {
-        $this->logger->info(
-            sprintf(
-                'Notification %s has been created. Event payload: %s',
-                $event->getId(),
-                json_encode($event, JSON_THROW_ON_ERROR)
-            )
-        );
+        NotificationLoggingHelper::logNotificationCreatedEvent($this->logger, $event);
 
         $this->messageBus->dispatch(
             new NotificationCreatedMessage($event->getId())
