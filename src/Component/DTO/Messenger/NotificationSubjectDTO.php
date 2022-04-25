@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Component\DTO\Request;
+namespace App\Component\DTO\Messenger;
 
 use App\Component\DTO\AbstractDTO;
 use App\Enums\ConfirmationTypes;

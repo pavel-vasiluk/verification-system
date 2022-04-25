@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Component\DTO\Request\NotificationSubjectDTO;
+use App\Client\Http\VerificationHttpClient;
+use App\Component\DTO\Messenger\NotificationMessageDTO;
+use App\Component\DTO\Messenger\NotificationSubjectDTO;
 use App\Entity\Notification;
 use App\Enums\ConfirmationTypes;
 use App\Enums\NotificationChannels;
 use App\Enums\TemplateSlug;
 use App\Event\Notification\NotificationCreatedEvent;
 use App\Exception\NotificationSubjectException;
-use App\HttpClient\VerificationHttpClient;
+use App\Resolver\NotificationClientResolver;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -27,17 +29,20 @@ class NotificationService
     private EntityManagerInterface $entityManager;
     private EventDispatcherInterface $eventDispatcher;
     private VerificationHttpClient $verificationHttpClient;
+    private NotificationClientResolver $notificationClientResolver;
     private ValidatorInterface $validator;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
         VerificationHttpClient $verificationHttpClient,
+        NotificationClientResolver $notificationClientResolver,
         ValidatorInterface $validator
     ) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->verificationHttpClient = $verificationHttpClient;
+        $this->notificationClientResolver = $notificationClientResolver;
         $this->validator = $validator;
     }
 
@@ -63,6 +68,12 @@ class NotificationService
         $this->eventDispatcher->dispatch(
             new NotificationCreatedEvent($notification->getId()?->toString(), Carbon::now())
         );
+    }
+
+    public function sendNotification(NotificationMessageDTO $notificationMessage): void
+    {
+        $notificationClient = $this->notificationClientResolver->resolve($notificationMessage);
+        $notificationClient->sendNotification($notificationMessage);
     }
 
     private function resolveNotificationBody(NotificationSubjectDTO $notificationSubject): string

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\HttpClient;
+namespace App\Client\Http;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

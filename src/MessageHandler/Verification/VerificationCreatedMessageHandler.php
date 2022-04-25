@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\MessageHandler\Verification;
 
-use App\Component\DTO\Request\NotificationSubjectDTO;
+use App\Component\DTO\Messenger\NotificationSubjectDTO;
 use App\Exception\VerificationNotFoundException;
 use App\Message\Verification\VerificationCreatedMessage;
 use App\Repository\VerificationRepository;

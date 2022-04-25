@@ -54,6 +54,16 @@ services:
         tags:
             - { name: 'verification_handler', priority: 160 }
 
-    App\HttpClient\VerificationHttpClient:
+    App\Client\Http\VerificationHttpClient:
         arguments:
             $baseUri: '%env(VERIFICATION_BASE_URI)%'
+
+    App\Client\Http\GotifyHttpClient:
+        arguments:
+            $baseUri: '%env(GOTIFY_BASE_URI)%'
+            $token: '%env(GOTIFY_APP_TOKEN)%'
+        tags: [ 'notification.client' ]
+
+    App\Resolver\NotificationClientResolver:
+        arguments:
+            - !tagged_iterator notification.client
