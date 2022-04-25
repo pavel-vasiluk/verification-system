@@ -6,9 +6,11 @@ namespace App\Component\DTO\Messenger;
 
 use App\Component\DTO\AbstractDTO;
 use App\Enums\NotificationChannels;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class NotificationMessageDTO extends AbstractDTO
+class NotificationMessageDTO extends AbstractDTO implements JsonSerializable
 {
     #[Assert\NotNull]
     #[Assert\Type(type: 'string')]
@@ -45,5 +47,16 @@ class NotificationMessageDTO extends AbstractDTO
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    #[ArrayShape(['id' => "string", 'recipient' => "string", 'channel' => "string", 'body' => "string"])]
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'recipient' => $this->getRecipient(),
+            'channel' => $this->getChannel(),
+            'body' => $this->getBody(),
+        ];
     }
 }
