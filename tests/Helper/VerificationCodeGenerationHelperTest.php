@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace App\Tests\Helper;
 
 use App\Helper\VerificationCodeGenerationHelper;
+use App\Tests\AbstractWebTestCase;
 use JetBrains\PhpStorm\ArrayShape;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @covers \App\Helper\VerificationCodeGenerationHelper
+ *
+ * @internal
  */
-class VerificationCodeGenerationHelperTest extends WebTestCase
+class VerificationCodeGenerationHelperTest extends AbstractWebTestCase
 {
     /**
-     * @dataProvider generationCodeSizesDataProvider
+     * @dataProvider generationCodeLengthDataProvider
      */
     public function testGenerateVerificationCodeCreatesUniqueCodesOfGivenSize(int $digits): void
     {
@@ -30,13 +32,13 @@ class VerificationCodeGenerationHelperTest extends WebTestCase
     }
 
     #[ArrayShape([
-        '4 digits' => "int[]",
-        '8 digits' => "int[]",
-        '10 digits' => "int[]",
-        '12 digits' => "int[]",
-        '16 digits' => "int[]",
+        '4 digits' => 'int[]',
+        '8 digits' => 'int[]',
+        '10 digits' => 'int[]',
+        '12 digits' => 'int[]',
+        '16 digits' => 'int[]',
     ])]
-    public function generationCodeSizesDataProvider(): array
+    public function generationCodeLengthDataProvider(): array
     {
         return [
             '4 digits' => [4],
