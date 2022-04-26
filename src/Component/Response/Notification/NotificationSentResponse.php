@@ -21,7 +21,7 @@ class NotificationSentResponse extends AbstractResponse
         return $this->isSuccessful;
     }
 
-    #[ArrayShape(['isSuccessful' => 'string'])]
+    #[ArrayShape(['isSuccessful' => 'boolean'])]
     public function jsonSerialize(): array
     {
         return [

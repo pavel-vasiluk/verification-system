@@ -14,8 +14,8 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class VerificationCreatedMessageHandler
 {
-    protected VerificationRepository $verificationRepository;
-    protected NotificationService $notificationService;
+    private VerificationRepository $verificationRepository;
+    private NotificationService $notificationService;
 
     public function __construct(
         VerificationRepository $verificationRepository,

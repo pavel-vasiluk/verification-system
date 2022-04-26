@@ -14,7 +14,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class NotificationCreatedMessageHandler
 {
-    protected NotificationService $notificationService;
+    private NotificationService $notificationService;
     private NotificationRepository $notificationRepository;
 
     public function __construct(
