@@ -10,11 +10,13 @@ RUN set -eux; \
             curl \
             git \
             librabbitmq-dev \
-            libssl-dev
+            libssl-dev \
+            libzip-dev \
+            zip
 
 RUN set -eux; \
-    # Install the PHP pdo_mysql extension
-    docker-php-ext-install pdo_mysql;
+    # Install the PHP pdo_mysql, zip extensions
+    docker-php-ext-install pdo_mysql zip;
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
