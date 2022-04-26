@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Component\DTO\Messenger\NotificationMessageDTO;
 use App\Component\DTO\Messenger\NotificationSubjectDTO;
 use App\Entity\Notification;
 use App\Enums\ConfirmationTypes;
 use App\Enums\NotificationChannels;
+use App\Exception\NotificationMessageException;
 use App\Exception\NotificationSubjectException;
 use App\Helper\VerificationCodeGenerationHelper;
 use App\Message\Notification\NotificationCreatedMessage;
@@ -15,6 +17,7 @@ use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
 use App\Tests\AbstractWebTestCase;
 use JetBrains\PhpStorm\ArrayShape;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @covers \App\Service\NotificationService
@@ -85,6 +88,56 @@ class NotificationServiceTest extends AbstractWebTestCase
             'code' => $code,
         ]);
         $this->notificationService->createNotification($notificationSubject);
+    }
+
+    /**
+     * @dataProvider notificationSendingDataProvider
+     */
+    public function testNotificationSuccessfullySent(
+        string $identity,
+        string $channel,
+        string $body
+    ): void {
+        $notification = (new Notification())
+            ->setRecipient($identity)
+            ->setChannel($channel)
+            ->setBody($body)
+        ;
+
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
+
+        $this->assertFalse($notification->isDispatched());
+
+        $notificationMessage = new NotificationMessageDTO([
+            'id' => $notification->getId()->toString(),
+            'recipient' => $notification->getRecipient(),
+            'channel' => $notification->getChannel(),
+            'body' => $notification->getBody(),
+        ]);
+        $this->notificationService->sendNotification($notificationMessage);
+
+        $this->assertTrue($notification->isDispatched());
+    }
+
+    /**
+     * @dataProvider invalidNotificationMessageValidationDataProvider
+     */
+    public function testNotificationMessageValidationFailed(
+        mixed $id,
+        mixed $recipient,
+        mixed $channel,
+        mixed $body
+    ): void {
+        $this->expectException(NotificationMessageException::class);
+
+        $notificationMessage = new NotificationMessageDTO([
+            'id' => $id,
+            'recipient' => $recipient,
+            'channel' => $channel,
+            'body' => $body,
+        ]);
+        $this->notificationService->sendNotification($notificationMessage);
     }
 
     #[ArrayShape(['email notification' => 'array', 'sms notification' => 'array'])]
@@ -162,6 +215,99 @@ class NotificationServiceTest extends AbstractWebTestCase
                 $correctEmailIdentity,
                 $correctMobileType,
                 $correctVerificationCode,
+            ],
+        ];
+    }
+
+    #[ArrayShape(['email notification' => 'array', 'sms notification' => 'array'])]
+    public function notificationSendingDataProvider(): array
+    {
+        return [
+            'email notification' => [
+                'john.doe@abc.xyz',
+                NotificationChannels::EMAIL_CHANNEL,
+                '<p>Verification code is 123</p>',
+            ],
+            'sms notification' => [
+                '+37120000001',
+                NotificationChannels::SMS_CHANNEL,
+                'Verification code is 123',
+            ],
+        ];
+    }
+
+    #[ArrayShape([
+        'nullable id' => 'array',
+        'non-string id' => 'array',
+        'nullable recipient' => 'array',
+        'non-string recipient' => 'array',
+        'nullable channel' => 'array',
+        'non-string channel' => 'array',
+        'channel of non-existing choice' => 'array',
+        'nullable body' => 'array',
+        'non-string body' => 'array',
+    ])]
+    public function invalidNotificationMessageValidationDataProvider(): array
+    {
+        $correctId = Uuid::uuid4()->toString();
+        $correctChannel = NotificationChannels::SMS_CHANNEL;
+        $correctRecipient = '+37120000001';
+        $correctBody = 'Verification code is 123';
+
+        return [
+            'nullable id' => [
+                null,
+                $correctRecipient,
+                $correctChannel,
+                $correctBody,
+            ],
+            'non-string id' => [
+                true,
+                $correctRecipient,
+                $correctChannel,
+                $correctBody,
+            ],
+            'nullable recipient' => [
+                $correctId,
+                null,
+                $correctChannel,
+                $correctBody,
+            ],
+            'non-string recipient' => [
+                $correctId,
+                true,
+                $correctChannel,
+                $correctBody,
+            ],
+            'nullable channel' => [
+                $correctId,
+                $correctRecipient,
+                null,
+                $correctBody,
+            ],
+            'non-string channel' => [
+                $correctId,
+                $correctRecipient,
+                true,
+                $correctBody,
+            ],
+            'channel of non-existing choice' => [
+                $correctId,
+                $correctRecipient,
+                '2fa',
+                $correctBody,
+            ],
+            'nullable body' => [
+                $correctId,
+                $correctRecipient,
+                $correctChannel,
+                null,
+            ],
+            'non-string body' => [
+                $correctId,
+                $correctRecipient,
+                $correctChannel,
+                true,
             ],
         ];
     }
