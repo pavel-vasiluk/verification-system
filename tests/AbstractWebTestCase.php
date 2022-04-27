@@ -12,11 +12,6 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
 
 abstract class AbstractWebTestCase extends WebTestCase
 {
-    protected const REQUEST_USER_INFO = [
-        'clientIp' => '0.0.0.0',
-        'userAgent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    ];
-
     protected ContainerInterface $container;
     protected EntityManagerInterface $entityManager;
     protected TransportInterface|InMemoryTransport $messageTransport;

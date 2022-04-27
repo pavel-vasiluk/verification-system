@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Component\DTO\Request\VerificationSubjectDTO;
-use App\Component\DTO\Request\VerificationUserInfoDTO;
-use App\Component\Request\AbstractUserInfoAwareRequest;
 use App\Component\Request\Verification\VerificationConfirmationRequest;
 use App\Component\Request\Verification\VerificationCreationRequest;
 use App\Entity\Verification;
@@ -20,20 +18,17 @@ use App\Helper\VerificationCodeGenerationHelper;
 use App\Message\Verification\VerificationCreatedMessage;
 use App\Repository\VerificationRepository;
 use App\Service\VerificationService;
-use App\Tests\AbstractWebTestCase;
 use Carbon\Carbon;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonException;
 use Ramsey\Uuid\Uuid;
-use ReflectionClass;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @covers \App\Service\VerificationService
  *
  * @internal
  */
-class VerificationServiceTest extends AbstractWebTestCase
+class VerificationServiceTest extends AbstractServiceTestCase
 {
     private VerificationService $verificationService;
     private VerificationRepository $verificationRepository;
@@ -213,28 +208,6 @@ class VerificationServiceTest extends AbstractWebTestCase
         ];
     }
 
-    private function prepareVerification(array $subject = [], array $userInfo = []): Verification
-    {
-        $verification = (new Verification())
-            ->setCode(VerificationCodeGenerationHelper::generateVerificationCode(8))
-            ->setSubject($subject ?: $this->prepareVerificationSubject()->jsonSerialize())
-            ->setUserInfo($userInfo ?: self::REQUEST_USER_INFO)
-        ;
-
-        $this->entityManager->persist($verification);
-        $this->entityManager->flush();
-
-        return $verification;
-    }
-
-    private function prepareVerificationSubject(): VerificationSubjectDTO
-    {
-        return new VerificationSubjectDTO([
-            'identity' => 'john.doe@abc.xyz',
-            'type' => ConfirmationTypes::EMAIL_CONFIRMATION,
-        ]);
-    }
-
     /**
      * @throws JsonException
      */
@@ -264,24 +237,25 @@ class VerificationServiceTest extends AbstractWebTestCase
         return $verificationConfirmationRequest;
     }
 
-    /**
-     * @throws JsonException
-     */
-    private function prepareHttpRequestWithBody(array $requestBody, array $attributes = []): Request
+    private function prepareVerification(array $subject = []): Verification
     {
-        $request = new Request();
-        $request->initialize([], [], $attributes, [], [], [], json_encode($requestBody, JSON_THROW_ON_ERROR));
+        $verification = (new Verification())
+            ->setCode(VerificationCodeGenerationHelper::generateVerificationCode(8))
+            ->setSubject($subject ?: $this->prepareRandomVerificationSubject()->jsonSerialize())
+            ->setUserInfo(self::REQUEST_USER_INFO)
+        ;
 
-        return $request;
+        $this->entityManager->persist($verification);
+        $this->entityManager->flush();
+
+        return $verification;
     }
 
-    private function setRequestUserInfo(AbstractUserInfoAwareRequest $request, array $userInfo = []): void
+    private function prepareRandomVerificationSubject(): VerificationSubjectDTO
     {
-        $reflectionClass = new ReflectionClass($request);
-        $reflectionProperty = $reflectionClass->getProperty('userInfo');
-        $reflectionProperty->setValue(
-            $request,
-            new VerificationUserInfoDTO($userInfo ?: self::REQUEST_USER_INFO)
-        );
+        return new VerificationSubjectDTO([
+            'identity' => 'john.doe@abc.xyz',
+            'type' => ConfirmationTypes::EMAIL_CONFIRMATION,
+        ]);
     }
 }

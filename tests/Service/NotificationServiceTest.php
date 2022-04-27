@@ -15,7 +15,6 @@ use App\Helper\VerificationCodeGenerationHelper;
 use App\Message\Notification\NotificationCreatedMessage;
 use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
-use App\Tests\AbstractWebTestCase;
 use JetBrains\PhpStorm\ArrayShape;
 use Ramsey\Uuid\Uuid;
 
@@ -24,7 +23,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @internal
  */
-class NotificationServiceTest extends AbstractWebTestCase
+class NotificationServiceTest extends AbstractServiceTestCase
 {
     private NotificationService $notificationService;
     private NotificationRepository $notificationRepository;

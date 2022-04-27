@@ -9,17 +9,15 @@ use App\Enums\TemplateSlug;
 use App\Exception\TemplateNotFoundException;
 use App\Helper\VerificationCodeGenerationHelper;
 use App\Service\TemplateService;
-use App\Tests\AbstractWebTestCase;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonException;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @covers \App\Service\NotificationService
  *
  * @internal
  */
-class TemplateServiceTest extends AbstractWebTestCase
+class TemplateServiceTest extends AbstractServiceTestCase
 {
     private TemplateService $templateService;
 
@@ -51,7 +49,7 @@ class TemplateServiceTest extends AbstractWebTestCase
         $this->assertSame($expectedTemplate, $verificationCodeTemplateResponse->getTemplate());
     }
 
-    #[ArrayShape(['email template' => "array", 'mobile template' => "array"])]
+    #[ArrayShape(['email template' => 'array', 'mobile template' => 'array'])]
     public function verificationCodeTemplateDataProvider(): array
     {
         return [
@@ -92,16 +90,5 @@ class TemplateServiceTest extends AbstractWebTestCase
         $request = $this->prepareHttpRequestWithBody($requestBody);
 
         return new VerificationCodeTemplateRequest($request);
-    }
-
-    /**
-     * @throws JsonException
-     */
-    private function prepareHttpRequestWithBody(array $requestBody, array $attributes = []): Request
-    {
-        $request = new Request();
-        $request->initialize([], [], $attributes, [], [], [], json_encode($requestBody, JSON_THROW_ON_ERROR));
-
-        return $request;
     }
 }
