@@ -51,7 +51,7 @@ class VerificationServiceTest extends AbstractWebTestCase
     }
 
     /**
-     * @dataProvider verificationCreationDataProvider
+     * @dataProvider verificationDataProvider
      */
     public function testVerificationCreated(string $identity, string $type): void
     {
@@ -94,9 +94,15 @@ class VerificationServiceTest extends AbstractWebTestCase
         $this->assertEmpty($this->messageTransport->get());
     }
 
-    public function testVerificationConfirmation(): void
+    /**
+     * @dataProvider verificationDataProvider
+     */
+    public function testVerificationConfirmation(string $identity, string $type): void
     {
-        $existingVerification = $this->prepareVerification();
+        $existingVerification = $this->prepareVerification([
+            'identity' => $identity,
+            'type' => $type,
+        ]);
 
         $this->assertFalse($existingVerification->isConfirmed());
         $this->assertFalse($existingVerification->isExpired());
@@ -193,7 +199,7 @@ class VerificationServiceTest extends AbstractWebTestCase
     }
 
     #[ArrayShape(['email notification' => 'array', 'sms notification' => 'array'])]
-    public function verificationCreationDataProvider(): array
+    public function verificationDataProvider(): array
     {
         return [
             'email notification' => [
