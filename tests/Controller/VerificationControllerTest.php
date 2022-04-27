@@ -286,6 +286,25 @@ class VerificationControllerTest extends AbstractHttpClientWebTestCase
         $this->assertResponseHasJson($expectedResponse);
     }
 
+    public function testVerificationConfirmationMalformedJsonExceptionThrown(): void
+    {
+        $this->client->request(
+            Request::METHOD_PUT,
+            sprintf('/verifications/%s/confirm', Uuid::uuid4()->toString()),
+            [],
+            [],
+            [],
+            '{...}'
+        );
+
+        $expectedResponse = [
+            'message' => 'Malformed JSON passed.',
+        ];
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        $this->assertResponseHasJson($expectedResponse);
+    }
+
     private function sendVerificationCreationRequest(array $subject): void
     {
         $this->sendPostRequest('/verifications', ['subject' => $subject]);
