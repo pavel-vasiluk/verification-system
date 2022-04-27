@@ -112,7 +112,17 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
 
     public function testVerificationCodeTemplateNotFoundExceptionThrown(): void
     {
-        // TODO: implement BE service & adjust logic
+        $this->sendVerificationCodeTemplateRequest(
+            '2fa-verification',
+            ['code' => VerificationCodeGenerationHelper::generateVerificationCode(8)]
+        );
+
+        $expectedResponse = [
+            'message' => 'Template not found.',
+        ];
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        $this->assertResponseHasJson($expectedResponse);
     }
 
     private function getExpectedTemplateWithCode(string $slug, string $code): string
