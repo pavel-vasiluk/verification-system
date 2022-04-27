@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @internal
  * @covers \App\Controller\TemplateController
+ *
+ * @internal
  */
 class TemplateControllerTest extends AbstractHttpClientWebTestCase
 {
