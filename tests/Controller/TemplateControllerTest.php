@@ -26,10 +26,10 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
      *
      * @throws JsonException
      */
-    public function testTemplateRendering(string $slug): void
+    public function testVerificationCodeTemplateRendered(string $slug): void
     {
         $verificationCode = VerificationCodeGenerationHelper::generateVerificationCode(8);
-        $this->sendRenderTemplateRequest($slug, ['code' => $verificationCode]);
+        $this->sendVerificationCodeTemplateRequest($slug, ['code' => $verificationCode]);
 
         $expectedContent = $this->getExpectedTemplateWithCode(
             $slug,
@@ -52,9 +52,9 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
     /**
      * @dataProvider invalidTemplateParametersDataProvider
      */
-    public function testTemplateRenderRequestValidationFailed(mixed $slug, mixed $variables): void
+    public function testVerificationCodeTemplateRequestValidationFailed(mixed $slug, mixed $variables): void
     {
-        $this->sendRenderTemplateRequest($slug, $variables);
+        $this->sendVerificationCodeTemplateRequest($slug, $variables);
 
         $expectedResponse = [
             'message' => 'Validation failed: invalid / missing variables supplied.',
@@ -91,7 +91,7 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
         ];
     }
 
-    public function testTemplateRenderMalformedJsonExceptionThrown(): void
+    public function testTVerificationCodeTemplateMalformedJsonExceptionThrown(): void
     {
         $this->client->request(
             Request::METHOD_POST,
@@ -110,7 +110,7 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
         $this->assertResponseHasJson($expectedResponse);
     }
 
-    public function testTemplateRenderTemplateNotFoundExceptionThrown(): void
+    public function testVerificationCodeTemplateNotFoundExceptionThrown(): void
     {
         // TODO: implement BE service & adjust logic
     }
@@ -127,7 +127,7 @@ class TemplateControllerTest extends AbstractHttpClientWebTestCase
         return str_replace('{{ code }}', $code, $content);
     }
 
-    private function sendRenderTemplateRequest(mixed $slug, mixed $variables): void
+    private function sendVerificationCodeTemplateRequest(mixed $slug, mixed $variables): void
     {
         $this->sendPostRequest(
             '/templates/render',
