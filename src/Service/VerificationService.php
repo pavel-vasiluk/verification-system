@@ -45,7 +45,7 @@ class VerificationService
      */
     public function createVerification(VerificationCreationRequest $request): VerificationCreationResponse
     {
-        if ($this->verificationRepository->findBySubject($request->getSubject())) {
+        if ($this->verificationRepository->findIdsBySubject($request->getSubject())) {
             throw new DuplicatedVerificationException();
         }
 

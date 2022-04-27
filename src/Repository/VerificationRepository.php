@@ -26,12 +26,12 @@ class VerificationRepository extends ServiceEntityRepository
     /**
      * @throws Exception
      */
-    public function findBySubject(VerificationSubjectDTO $subject): array
+    public function findIdsBySubject(VerificationSubjectDTO $subject): array
     {
         $connection = $this->getEntityManager()->getConnection();
         $statement = $connection->executeQuery(
             <<<'SQL'
-                 SELECT subject
+                 SELECT id
                  FROM verification
                  WHERE JSON_EXTRACT(subject, "$.type") LIKE ?
                  AND JSON_EXTRACT(subject, "$.identity") LIKE ?
