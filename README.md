@@ -30,11 +30,11 @@ As well as:
 4. Run `composer install` in order to install project dependencies
 5. Afterwards run `bin/console doctrine:migrations:migrate`to execute all project db migrations (for test-database use additional `-e test`option)
 6. Make sure everything is up - project should start being available at http://localhost:8000
-7. In order to test SMS notifications additional steps need to be completed:
-   7.1. Proceed to http://localhost:8080 (Gotify UI), login if needed
-   7.2 Press **APPS** -> **Create application**-> provide any name / description you want, and press **Create**
-   7.3 Copy your created application **token** value and proceed to project `.env` file (or create local override `.env.local`)
-   7.4 Add Gotify token parameter, e.g. `GOTIFY_APP_TOKEN=AEZ.CAEd79GiR40`
+7. In order to test SMS notifications additional steps need to be completed: 
+   1. Proceed to http://localhost:8080 (Gotify UI), login if needed 
+   2. Press **APPS** -> **Create application**-> provide any name / description you want, and press **Create**
+   3. Copy your created application **token** value and proceed to project `.env` file (or create local override `.env.local`) 
+   4. Add Gotify token parameter, e.g. `GOTIFY_APP_TOKEN=AEZ.CAEd79GiR40`
 8. In order to start consuming notification messages, following console command should be running on the background - `bin/console messenger:consume`
 
 ## Public system behavior
@@ -65,7 +65,7 @@ Expected response example:
 	   "id": "4e1daba5-0470-41fe-966a-9372aa428304"
     }
 
-Afterwards, notification should be send to your email or sms client (Mailhog / Gotify).
+Afterwards, notification should be sent to your email or sms client (Mailhog / Gotify).
 Copy `id` from response, as well as `code` from your email or sms.
 
 Prepare verification confirmation request:
@@ -76,6 +76,14 @@ Prepare verification confirmation request:
 	   "code": "10539088"
 	}
 Expected response: `204 (no content)`
+
+## Specifications
+
+System services specifications:
+
+[Template service](https://github.com/pavel-vasiluk/verification-system/blob/master/specs/template.md)
+[Verification service](https://github.com/pavel-vasiluk/verification-system/blob/master/specs/verification.md)
+[Notification service](https://github.com/pavel-vasiluk/verification-system/blob/master/specs/notification.md)
 
 ## Development
 Project has its code style rules defined by `php-cs-fixer` dev-dependency.
