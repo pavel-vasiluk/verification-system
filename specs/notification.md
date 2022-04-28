@@ -17,7 +17,7 @@ All the rest is up to your implementation.
 Implement consumer which will do the following:
 
 - consume `VerificationCreated` event from message broker;
-- based on event received render relevant [_Template_](./template.md) via HTTP using `http://<private-app>:<port>/templates/render` endpoint;
+- based on event received render relevant [_Template_](./template.md) via HTTP using `http://localhost:8000/templates/render` endpoint;
 - persist notification in storage.
 
 Dispatch notification via appropriate channel:
