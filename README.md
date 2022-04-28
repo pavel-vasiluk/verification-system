@@ -89,10 +89,12 @@ System services specifications:
 Project has its code style rules defined by `php-cs-fixer` dev-dependency.
 In order to test your code suggestion against it, run `vendor/bin/php-cs-fixer fix`
 
+To access any of the project servers (e.g. MySQL, RMQ, etc), review credentials provided in `docker-compose.yml` 
+
 ## Testing
 
 Project has both unit and functional tests (phpunit).
 Tests can be executed by `bin/phpunit`*
 
 * Note! test environment also requires valid Gotify app token as .env variable.
-* You can add it to the local-test .env override file `.env.test`, e.g. `GOTIFY_APP_TOKEN=AEZ.CAEd79GiR40`
+* You can add it to the local-test .env override file `.env.test.local`, e.g. `GOTIFY_APP_TOKEN=AEZ.CAEd79GiR40`
