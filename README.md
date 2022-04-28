@@ -45,7 +45,7 @@ Create new verification via public REST endpoint request. Examples:
 
     {
 	   "subject": {
-	   	   "identity": "john.doe@abc.xyz",
+           "identity": "john.doe@abc.xyz",
 	       "type": "email_confirmation"
 	   }
 	}
@@ -54,7 +54,7 @@ Create new verification via public REST endpoint request. Examples:
 
     {
 	   "subject": {
-	   	   "identity": "+37120000001",
+           "identity": "+37120000001",
 	       "type": "mobile_confirmation"
 	   }
 	}
