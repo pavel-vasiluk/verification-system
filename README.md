@@ -1,10 +1,6 @@
-# Pseudo-Verification system
+# Verification system pet project
 
 Event driven pseudo-verification system with public and private facing REST(-ish) API.
-
-## Preamble
-
-The goal of the project is to show tactical and strategic Domain-Driven Design skills in close to real word (small) project.
 
 ## Intro
 
